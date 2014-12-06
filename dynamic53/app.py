@@ -88,9 +88,10 @@ def r53_change_record(name, values,
     response = conn.get_all_rrsets(hosted_zone_id, type, name, maxitems=1)
     if response:
         rrset = response[0]
-        change1 = changes.add_change("DELETE", name, type, rrset.ttl)
-        for old_value in rrset.resource_records:
-            change1.add_value(old_value)
+        if rrset.name == name + '.':
+            change1 = changes.add_change("DELETE", name, type, rrset.ttl)
+            for old_value in rrset.resource_records:
+                change1.add_value(old_value)
     change2 = changes.add_change("CREATE", name, type, ttl)
     for new_value in values.split(','):
         change2.add_value(new_value)
